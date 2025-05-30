@@ -1,0 +1,80 @@
+// Use DBML to define your database structure
+// Docs: https://dbml.dbdiagram.io/docs
+
+Table topics {
+  slug VARCHAR(60) [pk]
+  description VARCHAR(255) [not null]
+  img_url VARCHAR(1000) [not null]
+}
+
+Table users {
+  username VARCHAR(60) [pk]
+  name VARCHAR(60) [not null]
+  avatar_url VARCHAR(1000) [not null]
+}
+
+Table articles {
+  article_id SERIAL [pk]
+  title VARCHAR(255) [not null]
+  topic VARCHAR(60) [not null, ref: > topics.slug]
+  author VARCHAR(60) [not null, ref: > users.username]
+  body TEXT [not null]
+  created_at TIMESTAMP [default: `now()`]
+  votes INT [default: 0]
+  article_img_url VARCHAR(1000) [not null, default: `'https://default.image/url.jpg'`]
+
+  Indexes {
+    (topic, author) [unique]
+  }
+}
+
+Table comments {
+  comment_id SERIAL [pk]
+  article_id INT [not null, ref: > articles.article_id]
+  author VARCHAR(60) [not null, ref: > users.username]
+  votes INT [default: 0]
+  created_at TIMESTAMP [default: `now()`]
+  body TEXT [not null]
+
+  Indexes {
+    (article_id, author) [unique]
+  }
+}
+
+Table emojis {
+  emoji_id SERIAL [pk]
+  emoji VARCHAR(10) [not null, unique]
+}
+
+Table emoji_article_user {
+  emoji_articule_user_id SERIAL [pk]
+  emoji_id INT [not null, ref: > emojis.emoji_id]
+  username VARCHAR(60) [not null, ref: > users.username]
+  article_id INT [not null, ref: > articles.article_id]
+
+  Indexes {
+    (emoji_id, username, article_id) [unique]
+  }
+}
+
+Table user_topic {
+  user_topic_id SERIAL [pk]
+  username VARCHAR(60) [not null, ref: > users.username]
+  topic VARCHAR(60) [not null, ref: > topics.slug]
+
+  Indexes {
+    (username, topic) [unique]
+  }
+}
+
+Table user_article_votes {
+  user_article_votes_id SERIAL [pk]
+  username VARCHAR(60) [not null, ref: > users.username]
+  article_id INT [not null, ref: > articles.article_id]
+  vote_count INT [not null]
+
+  Indexes {
+    (username, article_id) [unique]
+  }
+}
+

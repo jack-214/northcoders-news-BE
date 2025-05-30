@@ -1,5 +1,7 @@
 const {
-  convertTimestampToDate
+  convertTimestampToDate,
+  createRef,
+  formatComments,
 } = require("../db/seeds/utils");
 
 describe("convertTimestampToDate", () => {
@@ -38,3 +40,68 @@ describe("convertTimestampToDate", () => {
   });
 });
 
+describe("createRef", () => {
+  test("returns empty object when passed empty array", () => {
+    expect(createRef([], "key", "value")).toEqual({});
+  });
+  test("returns object with single key-value pair when passed array with single object", () => {
+    expect(
+      createRef([{ key: "keys", value: "values" }], "key", "value")
+    ).toEqual({
+      keys: "values",
+    });
+  });
+  test("returns object with multiple key-value pair when passed array with multiple objects", () => {
+    expect(
+      createRef(
+        [
+          { key: "keys", value: "values" },
+          { key: "keys1", value: "values1" },
+        ],
+        "key",
+        "value"
+      )
+    ).toEqual({
+      keys: "values",
+      keys1: "values1",
+    });
+  });
+  test("Does not mutate the input array", () => {
+    const input = [
+      { key: "keys", value: "values" },
+      { key: "keys1", value: "values1" },
+    ];
+    const copyInput = [
+      { key: "keys", value: "values" },
+      { key: "keys1", value: "values1" },
+    ];
+    createRef(input, "key", "value");
+    expect(input).toStrictEqual(copyInput);
+  });
+});
+
+describe("formatComments", () => {
+  test("returns empty array when passed empty array and object", () => {
+    expect(formatComments([], {})).toEqual([]);
+  });
+  test("returns array of single object containing article_title swapped with article_id", () => {
+    const comments = [{ article_title: "book" }];
+    const ref = { book: 1 };
+    expect(formatComments(comments, ref)).toEqual([{ article_id: 1 }]);
+  });
+  test("returns array of multiple objects containing article_title swapped with article_id", () => {
+    const comments = [{ article_title: "book" }, { article_title: "case" }];
+    const ref = { book: 1, case: 2 };
+    expect(formatComments(comments, ref)).toEqual([
+      { article_id: 1 },
+      { article_id: 2 },
+    ]);
+  });
+  test("Does not mutate the input array", () => {
+    const comments = [{ article_title: "book" }, { article_title: "case" }];
+    const copyComments = [{ article_title: "book" }, { article_title: "case" }];
+    const ref = { book: 1, case: 2 };
+    formatComments(comments, ref);
+    expect(comments).toStrictEqual(copyComments);
+  });
+});

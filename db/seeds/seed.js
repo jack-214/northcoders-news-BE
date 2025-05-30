@@ -2,11 +2,24 @@ const db = require("../connection");
 const format = require("pg-format");
 const {
   convertTimestampToDate,
-  createArticleRefByTitle,
+  createRef,
   formatComments,
 } = require("./utils");
 
-const seed = async ({ topicData, userData, articleData, commentData }) => {
+const seed = async ({
+  topicData,
+  userData,
+  articleData,
+  commentData,
+  emojiData,
+  emojiArticleUserData,
+  userTopicsData,
+  userArticleVotesData,
+}) => {
+  await db.query(`DROP TABLE IF EXISTS user_article_votes;`);
+  await db.query(`DROP TABLE IF EXISTS user_topic;`);
+  await db.query(`DROP TABLE IF EXISTS emoji_article_user;`);
+  await db.query(`DROP TABLE IF EXISTS emojis;`);
   await db.query(`DROP TABLE IF EXISTS comments;`);
   await db.query(`DROP TABLE IF EXISTS articles;`);
   await db.query(`DROP TABLE IF EXISTS users;`);
@@ -45,6 +58,35 @@ const seed = async ({ topicData, userData, articleData, commentData }) => {
     votes INT DEFAULT 0,
     author VARCHAR(60) REFERENCES users(username) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );
+  `);
+  await db.query(`
+    CREATE TABLE "emojis" (
+    "emoji_id" SERIAL PRIMARY KEY,
+    "emoji" VARCHAR(10) UNIQUE NOT NULL
+    );
+  `);
+  await db.query(`
+    CREATE TABLE "emoji_article_user" (
+    "emoji_article_user_id" SERIAL PRIMARY KEY,
+    "emoji_id" INT REFERENCES emojis(emoji_id) NOT NULL,
+    "username" VARCHAR(60) REFERENCES users(username) NOT NULL,
+    "article_id" INT REFERENCES articles(article_id) NOT NULL
+    );
+  `);
+  await db.query(`
+    CREATE TABLE "user_topic" (
+    "user_topic_id" SERIAL PRIMARY KEY,
+    "username" VARCHAR(60) REFERENCES users(username) NOT NULL,
+    "topic" VARCHAR(60) REFERENCES topics(slug) NOT NULL
+    );
+  `);
+  await db.query(`
+    CREATE TABLE "user_article_votes" (
+    "user_article_votes_id" SERIAL PRIMARY KEY,
+    "username" VARCHAR(60) REFERENCES users(username) NOT NULL,
+    "article_id" INT REFERENCES articles(article_id) NOT NULL,
+    "vote_count" INT NOT NULL
     );
   `);
 
@@ -86,11 +128,7 @@ const seed = async ({ topicData, userData, articleData, commentData }) => {
   const { rows: insertedArticles } = await db.query(articleInsertQueryStr);
 
   const dateformattedComments = commentData.map(convertTimestampToDate);
-  const articleTitleRef = createArticleRefByTitle(
-    insertedArticles,
-    "title",
-    "article_id"
-  );
+  const articleTitleRef = createRef(insertedArticles, "title", "article_id");
   const formattedComments = formatComments(
     dateformattedComments,
     articleTitleRef
@@ -106,6 +144,38 @@ const seed = async ({ topicData, userData, articleData, commentData }) => {
     ])
   );
   await db.query(commentInsertQueryStr);
+
+  const emojiInsertQueryStr = format(
+    `INSERT INTO emojis (emoji) VALUES %L RETURNING *;`,
+    emojiData.map(({ emoji }) => [emoji])
+  );
+  await db.query(emojiInsertQueryStr);
+
+  const emojiArticleUserQueryStr = format(
+    `INSERT INTO emoji_article_user (emoji_id, username, article_id) VALUES %L RETURNING *;`,
+    emojiArticleUserData.map(({ emoji_id, username, article_id }) => [
+      emoji_id,
+      username,
+      article_id,
+    ])
+  );
+  await db.query(emojiArticleUserQueryStr);
+
+  const userTopicQueryStr = format(
+    `INSERT INTO user_topic (username, topic) VALUES %L RETURNING *;`,
+    userTopicsData.map(({ username, topic }) => [username, topic])
+  );
+  await db.query(userTopicQueryStr);
+
+  const userArticleVotesQueryStr = format(
+    `INSERT INTO user_article_votes (username, article_id, vote_count) VALUES %L RETURNING *;`,
+    userArticleVotesData.map(({ username, article_id, vote_count }) => [
+      username,
+      article_id,
+      vote_count,
+    ])
+  );
+  await db.query(userArticleVotesQueryStr);
 };
 
 module.exports = seed;
