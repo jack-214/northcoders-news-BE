@@ -1,7 +1,8 @@
 module.exports = [
-  { username: "butter_bridge", topic: "coding" },
-  { username: "icellusedkars", topic: "football" },
-  { username: "rogersop", topic: "cooking" },
-  { username: "lurker", topic: "football" },
-  { username: "rogersop", topic: "coding" },
+  { username: "tickle122", topic: "coding" },
+  { username: "grumpy19", topic: "football" },
+  { username: "happyamy2016", topic: "cooking" },
+  { username: "cooljmessy", topic: "coding" },
+  { username: "weegembump", topic: "football" },
+  { username: "jessjelly", topic: "cooking" },
 ];
