@@ -2,6 +2,7 @@ const {
   fetchEndpoints,
   fetchTopics,
   fetchArticles,
+  fetchUsers,
 } = require("../models/api.models");
 
 exports.getEndpoints = (req, res) => {
@@ -19,5 +20,11 @@ exports.getTopics = (req, res) => {
 exports.getArticles = (req, res) => {
   fetchArticles().then((articles) => {
     res.status(200).send({ articles });
+  });
+};
+
+exports.getUsers = (req, res) => {
+  fetchUsers().then((users) => {
+    res.status(200).send({ users });
   });
 };

@@ -54,3 +54,18 @@ describe("GET /api/articles", () => {
       });
   });
 });
+
+describe("GET /api/users", () => {
+  test("200: Responds with an array of user objects with username, name and avatar_url", () => {
+    return request(app)
+      .get("/api/users")
+      .expect(200)
+      .then(({ body }) => {
+        body.users.forEach((user) => {
+          expect(typeof user.username).toBe("string");
+          expect(typeof user.name).toBe("string");
+          expect(typeof user.avatar_url).toBe("string");
+        });
+      });
+  });
+});
