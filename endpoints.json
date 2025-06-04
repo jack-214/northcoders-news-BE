@@ -49,5 +49,20 @@
         "article_img_url": "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
       }
     }
+  },
+  "GET /api/articles/:article_id/comments": {
+    "description": "Returns all comments for a given article_id",
+    "example_response": {
+      "comments": [
+        {
+          "comment_id": 1,
+          "votes": 10,
+          "created_at": 1594329060000,
+          "author": "jessjelly",
+          "body": "Great article!",
+          "article_id": 1
+        }
+      ]
+    }
   }
 }

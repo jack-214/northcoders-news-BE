@@ -40,11 +40,32 @@ exports.fetchUsers = () => {
 exports.fetchArticleById = (article_id) => {
   return db
     .query(
-      `SELECT author, title, article_id, body, topic, created_at, votes, article_img_url
-            FROM articles WHERE article_id = $1`,
+      `SELECT author,
+        title,
+        article_id,
+        body, topic,
+        created_at,
+        votes,
+        article_img_url
+        FROM articles WHERE article_id = $1`,
       [article_id]
     )
     .then(({ rows }) => {
       return rows[0];
     });
+};
+
+exports.fetchCommentsByArticleId = (article_id) => {
+  return db
+    .query(
+      `SELECT comment_id,
+        votes,
+        created_at,
+        author,
+        body,
+        article_id
+        FROM comments WHERE article_id = $1;`,
+      [article_id]
+    )
+    .then(({ rows }) => rows);
 };
