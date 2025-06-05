@@ -10,7 +10,7 @@ beforeEach(() => seed(data));
 afterAll(() => db.end());
 
 describe("GET /api", () => {
-  test("200: Responds with an object detailing the documentation for each endpoint", () => {
+  test("200: responds with an object detailing the documentation for each endpoint", () => {
     return request(app)
       .get("/api")
       .expect(200)
@@ -21,7 +21,7 @@ describe("GET /api", () => {
 });
 
 describe("GET /api/topics", () => {
-  test("200: Responds with an array of topic objects with the slug and description", () => {
+  test("200: responds with an array of topic objects with the slug and description", () => {
     return request(app)
       .get("/api/topics")
       .expect(200)
@@ -36,7 +36,7 @@ describe("GET /api/topics", () => {
 });
 
 describe("GET /api/articles", () => {
-  test("200: Responds with an array of article objects with author, title, article_id, topic, created_at, votes, article_img_url, comment_count", () => {
+  test("200: responds with an array of article objects with author, title, article_id, topic, created_at, votes, article_img_url, comment_count", () => {
     return request(app)
       .get("/api/articles")
       .expect(200)
@@ -56,7 +56,7 @@ describe("GET /api/articles", () => {
 });
 
 describe("GET /api/users", () => {
-  test("200: Responds with an array of user objects with username, name and avatar_url", () => {
+  test("200: responds with an array of user objects with username, name and avatar_url", () => {
     return request(app)
       .get("/api/users")
       .expect(200)
@@ -71,7 +71,7 @@ describe("GET /api/users", () => {
 });
 
 describe("GET /api/articles/:article_id", () => {
-  test("200: Responds with an article object with author, title, body, topic, created_at, votes and article_img_url", () => {
+  test("200: responds with an article object with author, title, body, topic, created_at, votes and article_img_url", () => {
     return request(app)
       .get("/api/articles/1")
       .expect(200)
@@ -85,10 +85,26 @@ describe("GET /api/articles/:article_id", () => {
         expect(typeof body.article.article_img_url).toBe("string");
       });
   });
+  test("404: resopnds with not found when article does not exist", () => {
+    return request(app)
+      .get("/api/articles/9999")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Article not found");
+      });
+  });
+  test("400: responds with 'Invalid article id' when given a non-numeric ID", () => {
+    return request(app)
+      .get("/api/articles/notanum")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Invalid article ID");
+      });
+  });
 });
 
 describe("GET /api/articles/:article_id/comments", () => {
-  test("200: Responds with an array of comment objects with comment _id, votes, created_at, author, body and article_id", () => {
+  test("200: responds with an array of comment objects with comment _id, votes, created_at, author, body and article_id", () => {
     return request(app)
       .get("/api/articles/1/comments")
       .expect(200)
@@ -101,6 +117,30 @@ describe("GET /api/articles/:article_id/comments", () => {
           expect(typeof comment.body).toBe("string");
           expect(typeof comment.article_id).toBe("number");
         });
+      });
+  });
+  test("400: responds with 'Invalid article id' when given a non-numeric ID", () => {
+    return request(app)
+      .get("/api/articles/notanum/comments")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Invalid article ID");
+      });
+  });
+  test("404: responds with 'Comments not found' when article exists but has no comments", () => {
+    return request(app)
+      .get("/api/articles/2/comments")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Comments not found");
+      });
+  });
+  test("404: responds with 'Article not found' if article_id does not exits", () => {
+    return request(app)
+      .get("/api/articles/9999/comments")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toMatch(/not found/i);
       });
   });
 });

@@ -7,40 +7,52 @@ const {
   fetchCommentsByArticleId,
 } = require("../models/api.models");
 
-exports.getEndpoints = (req, res) => {
-  fetchEndpoints().then((endpoints) => {
-    res.status(200).send({ endpoints });
-  });
+exports.getEndpoints = (req, res, next) => {
+  fetchEndpoints()
+    .then((endpoints) => {
+      res.status(200).send({ endpoints });
+    })
+    .catch(next);
 };
 
-exports.getTopics = (req, res) => {
-  fetchTopics().then((topics) => {
-    res.status(200).send({ topics });
-  });
+exports.getTopics = (req, res, next) => {
+  fetchTopics()
+    .then((topics) => {
+      res.status(200).send({ topics });
+    })
+    .catch(next);
 };
 
-exports.getArticles = (req, res) => {
-  fetchArticles().then((articles) => {
-    res.status(200).send({ articles });
-  });
+exports.getArticles = (req, res, next) => {
+  fetchArticles()
+    .then((articles) => {
+      res.status(200).send({ articles });
+    })
+    .catch(next);
 };
 
-exports.getUsers = (req, res) => {
-  fetchUsers().then((users) => {
-    res.status(200).send({ users });
-  });
+exports.getUsers = (req, res, next) => {
+  fetchUsers()
+    .then((users) => {
+      res.status(200).send({ users });
+    })
+    .catch(next);
 };
 
-exports.getArticleById = (req, res) => {
+exports.getArticleById = (req, res, next) => {
   const { article_id } = req.params;
-  fetchArticleById(article_id).then((article) => {
-    res.status(200).send({ article });
-  });
+  fetchArticleById(article_id)
+    .then((article) => {
+      return res.status(200).send({ article });
+    })
+    .catch(next);
 };
 
-exports.getCommentsByArticleId = (req, res) => {
+exports.getCommentsByArticleId = (req, res, next) => {
   const { article_id } = req.params;
-  fetchCommentsByArticleId(article_id).then((comments) => {
-    res.status(200).send({ comments });
-  });
+  fetchCommentsByArticleId(article_id)
+    .then((comments) => {
+      return res.status(200).send({ comments });
+    })
+    .catch(next);
 };
