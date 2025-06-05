@@ -124,3 +124,27 @@ exports.insertCommentByArticleId = (article_id, commentData) => {
       return rows[0];
     });
 };
+
+exports.updateArticleVotes = (article_id, voteData) => {
+  const { inc_votes } = voteData;
+  if (isNaN(article_id)) {
+    return Promise.reject({ status: 400, msg: "Invalid article ID" });
+  }
+  if (typeof inc_votes !== "number") {
+    return Promise.reject({ status: 400, msg: "Invalid vote increment" });
+  }
+  return db
+    .query(
+      `UPDATE articles
+      SET votes = votes + $1
+      WHERE article_id = $2
+      RETURNING *`,
+      [inc_votes, article_id]
+    )
+    .then(({ rows }) => {
+      if (!rows.length) {
+        return Promise.reject({ status: 404, msg: "Article not found" });
+      }
+      return rows[0];
+    });
+};
