@@ -144,3 +144,57 @@ describe("GET /api/articles/:article_id/comments", () => {
       });
   });
 });
+
+describe("POST /api/articles/:article_id/comments", () => {
+  test("201: responds with posted comment", () => {
+    const newComment = { username: "butter_bridge", body: "Test comment" };
+    return request(app)
+      .post("/api/articles/1/comments")
+      .send(newComment)
+      .expect(201)
+      .then(({ body }) => {
+        expect(body.comment).toMatchObject({
+          author: "butter_bridge",
+          body: "Test comment",
+          article_id: 1,
+          votes: 0,
+        });
+      });
+  });
+  test("400: responds with 'Missing required fields' when body is missing", () => {
+    return request(app)
+      .post("/api/articles/1/comments")
+      .send({ username: "butter_bridge" })
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Missing required fields");
+      });
+  });
+  test("400: responds with 'Missing required fields' when username is missing", () => {
+    return request(app)
+      .post("/api/articles/1/comments")
+      .send({ body: "Test comment" })
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Missing required fields");
+      });
+  });
+  test("400: responds with 'Invalid article ID' if article_id is invalid", () => {
+    return request(app)
+      .post("/api/articles/invalid_id/comments")
+      .send({ username: "butter_bridge", body: "Test comment" })
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Invalid article ID");
+      });
+  });
+  test("404: responds with 'Comment could not be created' if article_id is not found", () => {
+    return request(app)
+      .post("/api/articles/9999/comments")
+      .send({ username: "butter_bridge", body: "Test comment" })
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Not found");
+      });
+  });
+});

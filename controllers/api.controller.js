@@ -5,6 +5,7 @@ const {
   fetchUsers,
   fetchArticleById,
   fetchCommentsByArticleId,
+  insertCommentByArticleId,
 } = require("../models/api.models");
 
 exports.getEndpoints = (req, res, next) => {
@@ -53,6 +54,16 @@ exports.getCommentsByArticleId = (req, res, next) => {
   fetchCommentsByArticleId(article_id)
     .then((comments) => {
       return res.status(200).send({ comments });
+    })
+    .catch(next);
+};
+
+exports.postCommentByArticleId = (req, res, next) => {
+  const { article_id } = req.params;
+  const commentData = req.body;
+  insertCommentByArticleId(article_id, commentData)
+    .then((newComment) => {
+      res.status(201).send({ comment: newComment });
     })
     .catch(next);
 };

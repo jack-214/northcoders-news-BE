@@ -44,7 +44,7 @@
         "topic": "mitch",
         "author": "butter_bridge",
         "body": "I find this existence challenging",
-        "created_at": 1594329060000,
+        "created_at": "2025-06-05T12:34:56.789Z",
         "votes": 100,
         "article_img_url": "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
       }
@@ -52,17 +52,34 @@
   },
   "GET /api/articles/:article_id/comments": {
     "description": "Returns all comments for a given article_id",
-    "example_response": {
+    "exampleResponse": {
       "comments": [
         {
           "comment_id": 1,
           "votes": 10,
-          "created_at": 1594329060000,
+          "created_at": "2025-06-05T12:34:56.789Z",
           "author": "jessjelly",
           "body": "Great article!",
           "article_id": 1
         }
       ]
+    }
+  },
+  "POST /api/articles/:article_id/comments": {
+    "description": "Adds a new comment to the specified article",
+    "requestBody": {
+      "username": "string",
+      "body": "string"
+    },
+    "exampleResponse": {
+      "comment": {
+        "comment_id": 12,
+        "body": "This is a comment.",
+        "article_id": 1,
+        "author": "butter_bridge",
+        "votes": 0,
+        "created_at": "2025-06-05T12:34:56.789Z"
+      }
     }
   }
 }

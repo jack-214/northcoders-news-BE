@@ -103,3 +103,24 @@ exports.fetchCommentsByArticleId = (article_id) => {
         });
     });
 };
+
+exports.insertCommentByArticleId = (article_id, commentData) => {
+  const { username, body } = commentData;
+  if (isNaN(article_id)) {
+    return Promise.reject({ status: 400, msg: "Invalid article ID" });
+  }
+  if (!username || !body) {
+    return Promise.reject({ status: 400, msg: "Missing required fields" });
+  }
+
+  return db
+    .query(
+      `INSERT INTO comments (author, body, article_id)
+        VALUES ($1, $2, $3)
+        RETURNING comment_id, author, body, article_id, votes, created_at;`,
+      [username, body, article_id]
+    )
+    .then(({ rows }) => {
+      return rows[0];
+    });
+};
