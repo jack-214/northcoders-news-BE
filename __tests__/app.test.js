@@ -119,6 +119,14 @@ describe("GET /api/articles/:article_id/comments", () => {
         });
       });
   });
+  test("200: responds with an empty array when article has no comments", () => {
+    return request(app)
+      .get("/api/articles/2/comments")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.comments).toEqual([]);
+      });
+  });
   test("400: responds with 'Invalid article id' when given a non-numeric ID", () => {
     return request(app)
       .get("/api/articles/notanum/comments")
@@ -127,14 +135,7 @@ describe("GET /api/articles/:article_id/comments", () => {
         expect(body.msg).toBe("Invalid article ID");
       });
   });
-  test("404: responds with 'Comments not found' when article exists but has no comments", () => {
-    return request(app)
-      .get("/api/articles/2/comments")
-      .expect(404)
-      .then(({ body }) => {
-        expect(body.msg).toBe("Comments not found");
-      });
-  });
+
   test("404: responds with 'Article not found' if article_id does not exits", () => {
     return request(app)
       .get("/api/articles/9999/comments")
