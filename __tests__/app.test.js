@@ -1,4 +1,5 @@
 const endpointsJson = require("../endpoints.json");
+const { toBeSortedBy } = require("jest-sorted");
 const request = require("supertest");
 const seed = require("../db/seeds/seed");
 const data = require("../db/data/test-data/index");
@@ -51,6 +52,40 @@ describe("GET /api/articles", () => {
           expect(typeof article.article_img_url).toBe("string");
           expect(typeof article.comment_count).toBe("number");
         });
+      });
+  });
+  test("200: sorts by votes ascending", () => {
+    return request(app)
+      .get("/api/articles?sort_by=votes&order=asc")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.articles).toBeSortedBy("votes", { ascending: true });
+      });
+  });
+  test("200: responds with articles with topic specified", () => {
+    return request(app)
+      .get("/api/articles?topic=mitch")
+      .expect(200)
+      .then(({ body }) => {
+        body.articles.forEach((article) => {
+          expect(article.topic).toBe("mitch");
+        });
+      });
+  });
+  test("400: invalid sort_by column", () => {
+    return request(app)
+      .get("/api/articles?sort_by=invalid_column")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Invalid sort column");
+      });
+  });
+  test("400: invalid order", () => {
+    return request(app)
+      .get("/api/articles?order=banana")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Invalid order query");
       });
   });
 });

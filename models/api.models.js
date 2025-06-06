@@ -7,17 +7,31 @@ exports.fetchEndpoints = () => {
 
 exports.fetchTopics = () => {
   return db.query(`SELECT slug, description FROM topics;`).then(({ rows }) => {
-    if (!rows.length) {
-      return Promise.reject({ status: 404, msg: "Topics not found" });
-    }
     return rows;
   });
 };
 
-exports.fetchArticles = () => {
-  return db
-    .query(
-      `SELECT
+exports.fetchArticles = (sort_by = "created_at", order = "desc", topic) => {
+  const validSortColumns = [
+    "author",
+    "title",
+    "article_id",
+    "topic",
+    "created_at",
+    "votes",
+    "article_img_url",
+    "comment_count",
+  ];
+  const validOrders = ["asc", "desc"];
+
+  if (!validSortColumns.includes(sort_by)) {
+    return Promise.reject({ status: 400, msg: "Invalid sort column" });
+  }
+  if (!validOrders.includes(order.toLowerCase())) {
+    return Promise.reject({ status: 400, msg: "Invalid order query" });
+  }
+
+  let queryStr = `SELECT
         a.author,
         a.title,
         a.article_id,
@@ -27,25 +41,27 @@ exports.fetchArticles = () => {
         a.article_img_url,
         COUNT(c.comment_id)::INT AS comment_count 
     FROM articles a
-    LEFT JOIN comments c ON c.article_id = a.article_id
+    LEFT JOIN comments c ON c.article_id = a.article_id`;
+
+  const queryValues = [];
+  if (topic) {
+    queryStr += ` WHERE a.topic = $1 `;
+    queryValues.push(topic);
+  }
+
+  queryStr += `
     GROUP BY a.article_id
-    ORDER BY a.created_at DESC;`
-    )
-    .then(({ rows }) => {
-      if (!rows.length) {
-        return Promise.reject({ status: 404, msg: "Articles not found" });
-      }
-      return rows;
-    });
+    ORDER BY a.${sort_by} ${order.toUpperCase()}`;
+
+  return db.query(queryStr, queryValues).then(({ rows }) => {
+    return rows;
+  });
 };
 
 exports.fetchUsers = () => {
   return db
     .query(`SELECT username, name, avatar_url FROM users;`)
     .then(({ rows }) => {
-      if (!rows.length) {
-        return Promise.reject({ status: 404, msg: "Users not found" });
-      }
       return rows;
     });
 };
