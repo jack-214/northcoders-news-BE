@@ -13,7 +13,8 @@
     "description": "Responds with an array of all articles. Accepts queries for sorting.",
     "queries": {
       "sort_by": "column name to sort by, defaulys to 'created_at'",
-      "order": "'asc' or 'desc', defaults to 'desc"
+      "order": "'asc' or 'desc', defaults to 'desc",
+      "topic": "coding"
     },
     "exampleResponse": {
       "articles": [
