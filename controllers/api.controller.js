@@ -7,6 +7,7 @@ const {
   fetchCommentsByArticleId,
   insertCommentByArticleId,
   updateArticleVotes,
+  removeCommentByCommentId,
 } = require("../models/api.models");
 
 exports.getEndpoints = (req, res, next) => {
@@ -75,6 +76,15 @@ exports.patchArticleByArticleId = (req, res, next) => {
   updateArticleVotes(article_id, voteData)
     .then((updatedArticle) => {
       res.status(200).send({ article: updatedArticle });
+    })
+    .catch(next);
+};
+
+exports.deleteCommentByCommentId = (req, res, next) => {
+  const { comment_id } = req.params;
+  removeCommentByCommentId(comment_id)
+    .then((comment) => {
+      res.status(204).send();
     })
     .catch(next);
 };

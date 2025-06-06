@@ -246,3 +246,25 @@ describe("PATCH /api/articles/:article_id", () => {
       });
   });
 });
+
+describe("DELETE /api/comments/:comment_id", () => {
+  test("204: deletes comment and responds with 'Comment deleted'", () => {
+    return request(app).delete("/api/comments/1").expect(204);
+  });
+  test("400: responds with 'Invalid comment ID' when given non-numeric value", () => {
+    return request(app)
+      .delete("/api/comments/notnum")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Invalid comment ID");
+      });
+  });
+  test("404: responds with 'Comment not found' when comment does not exist", () => {
+    return request(app)
+      .delete("/api/comments/9999")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Comment not found");
+      });
+  });
+});
