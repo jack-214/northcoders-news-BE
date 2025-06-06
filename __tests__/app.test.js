@@ -118,9 +118,10 @@ describe("GET /api/articles/:article_id", () => {
         expect(typeof body.article.created_at).toBe("string");
         expect(typeof body.article.votes).toBe("number");
         expect(typeof body.article.article_img_url).toBe("string");
+        expect(typeof body.article.comment_count).toBe("number");
       });
   });
-  test("404: resopnds with not found when article does not exist", () => {
+  test("404: responds with not found when article does not exist", () => {
     return request(app)
       .get("/api/articles/9999")
       .expect(404)
