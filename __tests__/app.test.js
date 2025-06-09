@@ -72,6 +72,17 @@ describe("GET /api/articles", () => {
         });
       });
   });
+  test("200: responds with articles with topic, sort_by, order", () => {
+    return request(app)
+      .get("/api/articles?sort_by=votes&order=asc&topic=mitch")
+      .expect(200)
+      .then(({ body }) => {
+        body.articles.forEach((article) => {
+          expect(body.articles).toBeSortedBy("votes", { ascending: true });
+          expect(article.topic).toBe("mitch");
+        });
+      });
+  });
   test("400: invalid sort_by column", () => {
     return request(app)
       .get("/api/articles?sort_by=invalid_column")
