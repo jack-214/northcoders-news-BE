@@ -166,6 +166,16 @@ exports.updateArticleVotes = (article_id, voteData) => {
   if (typeof inc_votes !== "number") {
     return Promise.reject({ status: 400, msg: "Invalid vote increment" });
   }
+  if (inc_votes === undefined) {
+    return db
+      .query(`SELECT * FROM articles WHERE article_id = $1`, [article_id])
+      .then(({ rows }) => {
+        if (rows.length === 0) {
+          return Promise.reject({ statis: 404, msg: "Article not found" });
+        }
+        return rows[0];
+      });
+  }
   return db
     .query(
       `UPDATE articles
