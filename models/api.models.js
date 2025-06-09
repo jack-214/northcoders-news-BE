@@ -46,17 +46,30 @@ exports.fetchArticles = (sort_by = "created_at", order = "desc", topic) => {
   `;
 
   const queryValues = [];
+
   if (topic) {
     queryStr += ` WHERE a.topic = $1 `;
     queryValues.push(topic);
   }
 
-  queryStr += `
-    GROUP BY a.article_id
-    ORDER BY a.${sort_by} ${order.toUpperCase()}`;
+  queryStr += ` GROUP BY a.article_id ORDER BY a.${sort_by} ${order.toUpperCase()}`;
 
   return db.query(queryStr, queryValues).then(({ rows }) => {
-    return rows;
+    if (rows.length > 0) return rows;
+
+    if (topic) {
+      return db
+        .query(`SELECT * FROM topics WHERE slug = $1`, [topic])
+        .then(({ rows: topicRows }) => {
+          if (topicRows.length === 0) {
+            return Promise.reject({ status: 404, msg: "Topic not found" });
+          } else {
+            return [];
+          }
+        });
+    }
+
+    return [];
   });
 };
 

@@ -83,6 +83,14 @@ describe("GET /api/articles", () => {
         });
       });
   });
+  test("404: responds with 'Topic not found' when topic doesn't exist", () => {
+    return request(app)
+      .get("/api/articles?topic=notatopic")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Topic not found");
+      });
+  });
   test("400: invalid sort_by column", () => {
     return request(app)
       .get("/api/articles?sort_by=invalid_column")
