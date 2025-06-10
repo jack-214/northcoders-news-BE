@@ -1,9 +1,4 @@
-const endpoints = require("../endpoints.json");
 const db = require("../db/connection");
-
-exports.fetchEndpoints = () => {
-  return Promise.resolve(endpoints);
-};
 
 exports.fetchTopics = () => {
   return db.query(`SELECT slug, description FROM topics;`).then(({ rows }) => {

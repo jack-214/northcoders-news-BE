@@ -1,0 +1,89 @@
+* {
+  background-color: #f9f8d9;
+  font-family: "Courier New", Courier, monospace;
+  box-sizing: border-box;
+  color: rgb(79, 90, 94);
+}
+
+body {
+  line-height: 1.6;
+  margin: 0;
+  padding: 0;
+}
+
+header {
+  text-align: center;
+}
+
+header h1 {
+  margin: 0 0 0.5rem 0;
+  font-size: 0.5rem;
+  font-weight: normal;
+}
+
+main {
+  max-width: 900px;
+  margin: auto;
+  padding: 2rem 1rem;
+}
+
+section {
+  border-top: 0.5px solid rgb(3, 84, 109);
+}
+
+section h2 {
+  color: rgb(60, 68, 71);
+  margin-top: 0.5rem;
+}
+
+section h3 {
+  margin-top: 1rem;
+}
+
+header h1 {
+  background-color: rgb(3, 84, 109);
+  color: #fffdd0;
+  margin: 0 0 0.5rem 0;
+  padding: 0rem 0.5rem;
+  font-size: 2.5rem;
+}
+
+nav a {
+  color: #fffdd0;
+  text-decoration: none;
+  margin: 0.2rem;
+  padding: 0.1rem 0.5rem;
+  background-color: rgb(3, 84, 109);
+  display: inline-block;
+  transition: background 0.3s ease;
+}
+
+nav a:hover {
+  background-color: rgb(0, 57, 75);
+}
+
+pre {
+  background-color: #fcfced;
+  padding: 0.5rem;
+  overflow-x: auto;
+  font-size: 0.85rem;
+  border: 0.5px solid rgb(3, 84, 109);
+  border-left: 2px solid rgb(3, 84, 109);
+}
+
+code {
+  background-color: #fcfced;
+}
+
+.inline {
+  padding: 0.03rem 0.1rem;
+  border: 0.2px solid rgb(3, 84, 109);
+}
+
+ul {
+  padding-left: 1.5rem;
+}
+
+li {
+  padding: 1.5px;
+}

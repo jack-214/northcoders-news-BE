@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
+    <title>Northcodes News API Documentation</title>
+  </head>
+  <body>
+    <header>
+      <h1>Northcoders News API</h1>
+      <p>
+        A RESTful API for accessing and interacting with news articles, topics,
+        users, and comments.
+      </p>
+      <nav>
+        <a href="#api">/api</a>
+        <a href="#topics">/api/topics</a>
+        <a href="#articles">/api/articles</a>
+        <a href="#article-id">/api/articles/:article_id</a>
+        <a href="#article-comments">/api/articles/:article_id/comments</a>
+        <a href="#post-comment">POST /articles/:article_id/comments</a>
+        <a href="#patch-article">PATCH /articles/:article_id</a>
+        <a href="#delete-comment">DELETE /comments/:comment_id</a>
+        <a href="#users">/api/users</a>
+      </nav>
+    </header>
+    <main>
+      <section id="api">
+        <h2>GET /api</h2>
+        <p>Returns a JSON of all available API endpoints.</p>
+        <pre><code>{
+  "GET /api": { "description": "serves up a json representation of all the available endpoints of the api" }
+}</code></pre>
+      </section>
+
+      <section id="topics">
+        <h2>GET /api/topics</h2>
+        <p>Serves an array of all topics.</p>
+        <pre><code>{
+  "topics": [
+    { "slug": "football", "description": "Footie!" }
+  ]
+}</code></pre>
+      </section>
+
+      <section id="articles">
+        <h2>GET /api/articles</h2>
+        <p>Responds with an array of all articles.</p>
+        <h3>Query Parameters:</h3>
+        <ul>
+          <li>
+            <code class="inline">sort_by</code>: column name (default:
+            <code class="inline">created_at</code>)
+          </li>
+          <li>
+            <code class="inline">order</code>:
+            <code class="inline">asc</code> or
+            <code class="inline">desc</code> (default:
+            <code class="inline">desc</code>)
+          </li>
+          <li>
+            <code class="inline">topic</code>: e.g.
+            <code class="inline">coding</code>
+          </li>
+        </ul>
+        <pre><code>{
+  "articles": [
+    {
+      "title": "Seafood substitutions are increasing",
+      "topic": "cooking",
+      "author": "weegembump",
+      "created_at": "2018-05-30T15:59:13.341Z",
+      "votes": 0,
+      "comment_count": 6
+    }
+  ]
+}</code></pre>
+      </section>
+
+      <section id="article-id">
+        <h2>GET /api/articles/:article_id</h2>
+        <p>Returns a specific article by ID.</p>
+        <pre><code>{
+  "article": {
+    "title": "Living in the shadow of a great man",
+    "topic": "mitch",
+    "author": "butter_bridge",
+    "body": "I find this existence challenging",
+    "created_at": "2025-06-05T12:34:56.789Z",
+    "votes": 100,
+    "article_img_url": "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+    "comment_count": 6
+  }
+}</code></pre>
+      </section>
+
+      <section id="article-comments">
+        <h2>GET /api/articles/:article_id/comments</h2>
+        <p>Returns all comments for the specified article.</p>
+        <pre><code>{
+  "comments": [
+    {
+      "comment_id": 1,
+      "votes": 10,
+      "created_at": "2025-06-05T12:34:56.789Z",
+      "author": "jessjelly",
+      "body": "Great article!",
+      "article_id": 1
+    }
+  ]
+}</code></pre>
+      </section>
+
+      <section id="post-comment">
+        <h2>POST /api/articles/:article_id/comments</h2>
+        <p>Adds a new comment to the article.</p>
+        <h3>Request Body:</h3>
+        <pre><code>{
+  "username": "string",
+  "body": "string"
+}</code></pre>
+        <h3>Response:</h3>
+        <pre><code>{
+  "comment": {
+    "comment_id": 12,
+    "body": "This is a comment.",
+    "article_id": 1,
+    "author": "butter_bridge",
+    "votes": 0,
+    "created_at": "2025-06-05T12:34:56.789Z"
+  }
+}</code></pre>
+      </section>
+
+      <section id="patch-article">
+        <h2>PATCH /api/articles/:article_id</h2>
+        <p>Updates the vote count of a specific article.</p>
+        <h3>Request Body:</h3>
+        <pre><code>{
+  "inc_votes": number
+}</code></pre>
+        <h3>Response:</h3>
+        <pre><code>{
+  "article": {
+    "article_id": 1,
+    "title": "Running a Node App",
+    "body": "This is part two of a series on how to get up and running with Node.js...",
+    "votes": 101,
+    "topic": "coding",
+    "author": "jessjelly",
+    "created_at": "2020-11-07T09:00:00.000Z"
+  }
+}</code></pre>
+      </section>
+
+      <section id="delete-comment">
+        <h2>DELETE /api/comments/:comment_id</h2>
+        <p>Deletes a comment by ID.</p>
+        <pre><code>{
+  "status": 204,
+  "body": null
+}</code></pre>
+      </section>
+
+      <section id="users">
+        <h2>GET /api/users</h2>
+        <p>Returns a list of all users.</p>
+        <pre><code>{
+  "users": [
+    {
+      "username": "rogersop",
+      "name": "paul",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/24394918?s=400&v=4"
+    }
+  ]
+}</code></pre>
+      </section>
+    </main>
+
+    <footer>
+      <p>© 2025 Northcoders News API | Node.js v18+ | PostgreSQL v14+</p>
+      <p>
+        Hosted on
+        <a href="https://northcoders-news-be-ngc3.onrender.com/api">Render</a>
+      </p>
+    </footer>
+  </body>
+</html>

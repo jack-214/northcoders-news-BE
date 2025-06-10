@@ -1,5 +1,4 @@
 const {
-  fetchEndpoints,
   fetchTopics,
   fetchArticles,
   fetchUsers,
@@ -9,13 +8,10 @@ const {
   updateArticleVotes,
   removeCommentByCommentId,
 } = require("../models/api.models");
+const path = require("path");
 
 exports.getEndpoints = (req, res, next) => {
-  fetchEndpoints()
-    .then((endpoints) => {
-      res.status(200).send({ endpoints });
-    })
-    .catch(next);
+  res.sendFile(path.join(__dirname, "../public/index.html"));
 };
 
 exports.getTopics = (req, res, next) => {
