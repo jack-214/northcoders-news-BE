@@ -49,7 +49,9 @@ exports.fetchArticles = (sort_by = "created_at", order = "desc", topic) => {
     queryValues.push(topic);
   }
 
-  queryStr += ` GROUP BY a.article_id ORDER BY a.${sort_by} ${order.toUpperCase()}`;
+  queryStr += ` GROUP BY a.article_id ORDER BY ${
+    sort_by === "comment_count" ? "comment_count" : `a.${sort_by}`
+  } ${order.toUpperCase()}`;
 
   return db.query(queryStr, queryValues).then(({ rows }) => {
     if (rows.length > 0) return rows;
